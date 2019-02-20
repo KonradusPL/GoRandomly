@@ -43,7 +43,7 @@ class LocationProvider(private val context: Context){
     }
 
 
-    fun stop(){
+    fun stopObservingLocation(){
         locationClient.removeLocationUpdates(locationCallback)
     }
 }

@@ -10,10 +10,15 @@ open class BasePresenter<V: MvpView>(var view: V): MvpPresenter<V> {
 
     }
 
+    override fun onDestroy() {
+        cd.clear()
+    }
+
     override fun start() {
     }
 
     override fun stop() {
-        cd.clear()
     }
+
+
 }

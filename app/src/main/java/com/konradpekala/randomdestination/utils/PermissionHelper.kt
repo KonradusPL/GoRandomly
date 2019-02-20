@@ -30,6 +30,7 @@ class PermissionsHelper(val context: Activity) {
                 override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest?, token: PermissionToken?) {
                     Log.d("permission","RATIONALE_SHOULD_BE_SHOWN")
                     emitter.onNext(PermissionState.RATIONALE_SHOULD_BE_SHOWN)
+                    token?.continuePermissionRequest()
                     emitter.onComplete()
                 }
                 override fun onPermissionDenied(response: PermissionDeniedResponse?) {
