@@ -3,20 +3,22 @@ package com.konradpekala.randomdestination.data.auth
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import io.reactivex.Completable
+import io.reactivex.Single
 
-object FirebaseAuth {
+class FirebaseAuth {
+
+    val auth = FirebaseAuth.getInstance()
     fun isUserLoggedIn():Boolean {
-        return FirebaseAuth.getInstance().currentUser != null
+        return auth.currentUser != null
     }
 
-    fun signUp(email: String, password: String): Completable{
-        return Completable.create { emitter ->
-            FirebaseAuth.getInstance()
-                .createUserWithEmailAndPassword(email,password)
+    fun signUp(email: String, password: String): Single<String>{
+        return Single.create { emitter ->
+            auth.createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener { task ->
                     if(task.isSuccessful){
                         Log.w("createUserWithEmail:s", task.exception)
-                        emitter.onComplete()
+                        emitter.onSuccess(auth.currentUser!!.uid)
                     }else{
                         Log.w("createUserWithEmail:e", task.exception)
                         emitter.onError(task.exception!!.fillInStackTrace())
@@ -27,8 +29,7 @@ object FirebaseAuth {
 
     fun signIn(email: String, password: String): Completable{
         return Completable.create { emitter ->
-            FirebaseAuth.getInstance()
-                .signInWithEmailAndPassword(email,password)
+            auth.signInWithEmailAndPassword(email,password)
                 .addOnCompleteListener { task ->
                     if(task.isSuccessful){
                         Log.w("createUserWithEmail:s", task.exception)

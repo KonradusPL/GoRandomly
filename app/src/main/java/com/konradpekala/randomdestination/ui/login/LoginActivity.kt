@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.konradpekala.randomdestination.R
+import com.konradpekala.randomdestination.data.FirebaseDatabase
 import com.konradpekala.randomdestination.data.auth.FirebaseAuth
 import com.konradpekala.randomdestination.data.repos.LoginRepository
 import com.konradpekala.randomdestination.main.MainActivity
@@ -12,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : BaseActivity(),LoginMvp.View {
 
-    private val mPresenter = LoginPresenter<LoginMvp.View>(this, LoginRepository(FirebaseAuth))
+    private val mPresenter = LoginPresenter<LoginMvp.View>(this, LoginRepository(FirebaseAuth(), FirebaseDatabase()))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
