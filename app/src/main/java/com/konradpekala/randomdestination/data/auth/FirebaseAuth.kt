@@ -41,4 +41,6 @@ class FirebaseAuth {
                 }
         }
     }
+
+    fun getUserId() = auth.currentUser?.uid ?: ""
 }

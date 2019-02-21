@@ -17,4 +17,24 @@ class FirebaseDatabase {
                 .addOnFailureListener { exception ->  emitter.onError(exception.fillInStackTrace()) }
         }
     }
+
+    fun getUser(userId: String): Single<User>{
+        return Single.create{emitter ->
+            db.collection("users").document(userId).get()
+                .addOnSuccessListener { document ->
+                    if (document != null)
+                        emitter.onSuccess(document.toObject(User::class.java)!!)
+                    else
+                        emitter.onError(Throwable("Brak dokumentu"))
+                }.addOnFailureListener{exception -> emitter.onError(exception) }
+        }
+    }
+
+    fun updateUser(user: User): Completable{
+        return Completable.create { emitter ->
+            db.collection("users").document(user.id).set(user)
+                .addOnSuccessListener { emitter.onComplete() }
+                .addOnFailureListener { exception ->  emitter.onError(exception.fillInStackTrace()) }
+        }
+    }
 }
