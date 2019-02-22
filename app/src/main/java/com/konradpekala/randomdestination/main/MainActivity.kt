@@ -1,20 +1,25 @@
 package com.konradpekala.randomdestination.main
 
-import android.location.Location
+import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
+import androidx.transition.TransitionManager
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
 import com.konradpekala.randomdestination.R
 import com.konradpekala.randomdestination.data.FirebaseDatabase
 import com.konradpekala.randomdestination.data.LocationProvider
 import com.konradpekala.randomdestination.data.auth.FirebaseAuth
 import com.konradpekala.randomdestination.data.repos.MainRepository
 import com.konradpekala.randomdestination.ui.base.BaseActivity
-import com.konradpekala.randomdestination.ui.base.MvpPresenter
+import com.konradpekala.randomdestination.ui.login.LoginActivity
 import com.konradpekala.randomdestination.utils.MapHelper
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_change_name.view.*
+
 
 class MainActivity : BaseActivity(),MainMvp.View {
 
@@ -34,6 +39,21 @@ class MainActivity : BaseActivity(),MainMvp.View {
         mPresenter.onCreate()
     }
 
+    fun animate(first: Boolean){
+        val constraintSet1 = ConstraintSet()
+        constraintSet1.clone(this, R.layout.activity_main)
+        val constraintSet2 = ConstraintSet()
+        constraintSet2.clone(this, R.layout.activity_main_profile)
+
+        var changed = false
+
+        TransitionManager.beginDelayedTransition(constraintLayout)
+        val constraint = if (first) constraintSet1 else constraintSet2
+        constraint.applyTo(constraintLayout)
+        changed = !changed
+
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         mPresenter.onDestroy()
@@ -46,6 +66,35 @@ class MainActivity : BaseActivity(),MainMvp.View {
         buttonNewDestination.setOnClickListener {
             mPresenter.onNewDestinationButtonClick()
         }
+        imageGoToProfile.setOnClickListener {
+            animate(false)
+        }
+        iconExitFromProfile.setOnClickListener {
+            animate(true)
+        }
+        buttonLogOut.setOnClickListener {
+            mPresenter.onLogOutClick()
+        }
+        buttonChangeName.setOnClickListener {
+            createChangeNameDialog()
+        }
+
+    }
+
+    private fun createChangeNameDialog(){
+        val customView = LayoutInflater.from(this).inflate(R.layout.dialog_change_name,constraintLayout,false)
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Zmiana nazwy")
+            .setView(customView).create()
+
+        customView.buttonDialogCreate.setOnClickListener {
+            mPresenter.onChangeNameClick(customView.fieldUserName.text.toString())
+            dialog.hide()
+        }
+
+        dialog.show()
+
     }
 
     private fun initMapStuff(){
@@ -60,7 +109,6 @@ class MainActivity : BaseActivity(),MainMvp.View {
         mFragmentMap.getMapAsync(mMapHelper)
     }
 
-
     override fun getPresenter() = mPresenter
 
     override fun getMap() = mMapHelper
@@ -69,11 +117,28 @@ class MainActivity : BaseActivity(),MainMvp.View {
         buttonNewDestination.visibility = View.VISIBLE
     }
 
+    override fun updateNameText(name: String) {
+        textUserName.text = name
+    }
+
     override fun updateDistanceText(distance: Float) {
+        if (textDistance.visibility == View.GONE)
+            textDistance.visibility = View.VISIBLE
         textDistance.text = "Dystans: ${distance.toInt()}m"
+    }
+
+    override fun openLoginActivity() {
+        startActivity(Intent(this,LoginActivity::class.java))
     }
 
     override fun hideNewDestinationButton() {
         buttonNewDestination.visibility = View.GONE
+    }
+
+    override fun showDistanceText() {
+        textDistance.visibility = View.VISIBLE
+    }
+    override fun hideDistanceText() {
+        textDistance.visibility = View.GONE
     }
 }

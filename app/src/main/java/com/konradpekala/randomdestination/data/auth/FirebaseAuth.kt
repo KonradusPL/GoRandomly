@@ -42,5 +42,9 @@ class FirebaseAuth {
         }
     }
 
+    fun logOut(){
+        auth.signOut()
+    }
+
     fun getUserId() = auth.currentUser?.uid ?: ""
 }

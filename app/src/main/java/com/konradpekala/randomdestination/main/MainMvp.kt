@@ -10,13 +10,19 @@ interface MainMvp {
         fun showNewDestinationButton()
         fun hideNewDestinationButton()
         fun updateDistanceText(distance: Float)
+        fun hideDistanceText()
+        fun showDistanceText()
         fun getPresenter(): Presenter<View>
         fun getMap(): MapInterface
+        fun updateNameText(name: String)
+        fun openLoginActivity()
     }
     interface Presenter<V: View>: MvpPresenter<V>{
         fun onGoToUserLocationClick()
         fun onMapCreated()
         fun onNewDestinationButtonClick()
+        fun onLogOutClick()
+        fun onChangeNameClick(newName: String)
     }
     interface MapInterface{
         fun goToUserLocation(location: Location)

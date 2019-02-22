@@ -2,7 +2,7 @@ package com.konradpekala.randomdestination.data.model
 
 
 
-data class User(var fullName: String="",
+data class User(var fullName: String="Uzytkownik",
                 var email: String="",
                 var password: String="",
                 var id: String="",

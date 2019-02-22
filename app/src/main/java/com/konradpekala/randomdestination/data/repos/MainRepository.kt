@@ -58,6 +58,16 @@ class MainRepository(private val mLocationProvider: LocationProvider,
             .observeOn(SchedulerProvider.ui())
     }
 
+    fun logOut(){
+        mAuth.logOut()
+    }
+
+    fun changeName(name: String, user: User): Completable{
+        val userCopy = user.copy()
+        userCopy.fullName = name
+        return mDb.updateUser(userCopy)
+    }
+
     fun generateDestination(level: Int, lastLocation: Location): LatLng{
 
         val radius = (level)*(level)*10

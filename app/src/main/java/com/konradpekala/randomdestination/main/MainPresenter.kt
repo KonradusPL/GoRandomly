@@ -25,6 +25,7 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
         cd.add(repo.getUser()
             .subscribe({user: User ->
                 mUser = user
+                view.updateNameText(user.fullName)
                 if (!mUser!!.hasDestination){
                     view.showNewDestinationButton()
                 }else{
@@ -82,6 +83,7 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
                                 .subscribe({t:User ->
                                     userIsUpdatedOnReach = false
                                     mUser = t
+                                    view.hideDistanceText()
                                     view.getMap().hideDestination()
                                     view.showNewDestinationButton()
                                     view.getMap().showOrMoveSearchingSurface(
@@ -95,6 +97,20 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
             }, { t: Throwable? ->
 
             }))
+    }
+
+    override fun onLogOutClick() {
+        repo.logOut()
+    }
+
+    override fun onChangeNameClick(newName: String) {
+        if (mUser == null)
+            return
+        cd.add(repo.changeName(newName,mUser!!).subscribe({
+            view.updateNameText(newName)
+        },{t: Throwable? ->
+            view.showMessage("Bład przy zmienianiu nazwy")
+        }))
     }
     override fun onGoToUserLocationClick() {
         if (mLastLocation != null){
