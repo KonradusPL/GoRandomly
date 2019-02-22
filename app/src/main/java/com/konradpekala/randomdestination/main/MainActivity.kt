@@ -86,6 +86,10 @@ class MainActivity : BaseActivity(),MainMvp.View {
         buttonNewDestination.visibility = View.VISIBLE
     }
 
+    override fun updateDistanceText(distance: Float) {
+        textDistance.text = "Dystans: ${distance.toInt()}m"
+    }
+
     override fun hideNewDestinationButton() {
         buttonNewDestination.visibility = View.GONE
     }

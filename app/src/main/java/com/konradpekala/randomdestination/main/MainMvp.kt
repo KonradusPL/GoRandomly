@@ -14,6 +14,7 @@ interface MainMvp {
         fun hideSearchingSurface()
         fun showNewDestinationButton()
         fun hideNewDestinationButton()
+        fun updateDistanceText(distance: Float)
         fun getPresenter(): Presenter<View>
     }
     interface Presenter<V: View>: MvpPresenter<V>{

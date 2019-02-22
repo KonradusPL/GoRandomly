@@ -9,6 +9,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import io.reactivex.Observable
+import io.reactivex.Single
 
 class PermissionsHelper(val context: Activity) {
     enum class PermissionState{
@@ -17,26 +18,23 @@ class PermissionsHelper(val context: Activity) {
         DENIED
     }
 
-    fun checkPermission(permission: String): Observable<PermissionState> {
+    fun checkPermission(permission: String): Single<String> {
 
-        return Observable.create {
+        return Single.create {
                 emitter ->
             val permissionListener = object: PermissionListener {
                 override fun onPermissionGranted(response: PermissionGrantedResponse?) {
                     Log.d("permission","GRANTED")
-                    emitter.onNext(PermissionState.GRANTED)
-                    emitter.onComplete()
+                    emitter.onSuccess("GRANTED")
                 }
                 override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest?, token: PermissionToken?) {
                     Log.d("permission","RATIONALE_SHOULD_BE_SHOWN")
-                    emitter.onNext(PermissionState.RATIONALE_SHOULD_BE_SHOWN)
+                    emitter.onSuccess("RATIONALE_SHOULD_BE_SHOWN")
                     token?.continuePermissionRequest()
-                    emitter.onComplete()
                 }
                 override fun onPermissionDenied(response: PermissionDeniedResponse?) {
                     Log.d("permission","DENIED")
-                    emitter.onNext(PermissionState.DENIED)
-                    emitter.onComplete()
+                    emitter.onError(Throwable("DENIED"))
                 }
 
             }

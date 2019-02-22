@@ -34,13 +34,26 @@ class MainRepository(private val mLocationProvider: LocationProvider,
                 .observeOn(SchedulerProvider.ui())
     }
 
-    fun updateUserDestination(user: User, newDestination: LatLng): Completable{
+    fun updateUserDestination(user: User, newDestination: LatLng): Single<User>{
         val userCopy = user.copy()
 
         userCopy.hasDestination = true
         userCopy.destination = Position(newDestination.latitude,newDestination.longitude)
 
         return mDb.updateUser(userCopy)
+            .toSingle { userCopy }
+            .subscribeOn(SchedulerProvider.io())
+            .observeOn(SchedulerProvider.ui())
+    }
+
+    fun updateUserOnReachDestination(user: User): Single<User>{
+        val userCopy = user.copy()
+        userCopy.level++
+        userCopy.hasDestination = false
+        userCopy.destination = Position()
+
+        return mDb.updateUser(userCopy)
+            .toSingle { userCopy }
             .subscribeOn(SchedulerProvider.io())
             .observeOn(SchedulerProvider.ui())
     }
@@ -57,6 +70,14 @@ class MainRepository(private val mLocationProvider: LocationProvider,
 
         return randomPosition
     }
+
+    fun getDistance(lastLocation: Location, dest: Position): Float{
+        return LatLngUtils.getDistanceInMeters(
+            LatLng(lastLocation.latitude,lastLocation.longitude),
+            LatLng(dest.lat,dest.lng))
+    }
+
+    fun hasReachedDestination(distance: Float) = distance < 20
 
     fun getSearchingRadius(level: Int): Int{
         return (level)*(level)*10

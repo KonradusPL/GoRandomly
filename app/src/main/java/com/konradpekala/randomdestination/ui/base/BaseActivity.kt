@@ -19,6 +19,7 @@ import com.konradpekala.randomdestination.utils.PermissionsHelper
 import es.dmoral.toasty.Toasty
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -53,9 +54,9 @@ open class BaseActivity : AppCompatActivity(), MvpView {
         t.show()
     }
 
-    override fun checkLocationSettings(): Completable {
+    override fun checkLocationSettings(): Single<String> {
 
-        return Completable.create { emitter ->
+        return Single.create { emitter ->
             val builder = LocationSettingsRequest.Builder()
                 .addLocationRequest(LocationRequest().apply {
                     interval = 1000
@@ -70,7 +71,7 @@ open class BaseActivity : AppCompatActivity(), MvpView {
 
             taskCheckSettings.addOnSuccessListener{
                 Log.d("Michno", "OnSuccessListener")
-                emitter.onComplete()
+                emitter.onSuccess("success")
             }
 
             taskCheckSettings.addOnFailureListener { exception ->
@@ -83,7 +84,7 @@ open class BaseActivity : AppCompatActivity(), MvpView {
                                 Thread.sleep(100)
                             }
                             uiThread {
-                                emitter.onComplete()
+                                emitter.onSuccess("success")
                             }
                         }
                     } catch (sendEx: IntentSender.SendIntentException) {
@@ -102,7 +103,7 @@ open class BaseActivity : AppCompatActivity(), MvpView {
     }
 
 
-    override fun checkPermission(permission: String): Observable<PermissionsHelper.PermissionState> {
+    override fun checkPermission(permission: String): Single<String> {
         return mPermissionsHelper.checkPermission(permission)
     }
 

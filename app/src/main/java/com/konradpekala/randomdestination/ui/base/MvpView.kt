@@ -5,6 +5,7 @@ import android.content.Context
 import com.konradpekala.randomdestination.utils.PermissionsHelper
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 
 interface MvpView {
 
@@ -18,8 +19,8 @@ interface MvpView {
     fun getCtx(): Context
     fun getActivity(): Activity
 
-    fun checkPermission(permission: String): Observable<PermissionsHelper.PermissionState>
+    fun checkPermission(permission: String): Single<String>
     fun requestPermissionsSafely(permissions: Array<String>, requestCode: Int)
 
-    fun checkLocationSettings(): Completable
+    fun checkLocationSettings(): Single<String>
 }

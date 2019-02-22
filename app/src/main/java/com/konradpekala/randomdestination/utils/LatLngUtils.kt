@@ -49,4 +49,10 @@ object LatLngUtils {
         return randomLatLng
     }
 
+    fun getDistanceInMeters(l1: LatLng, l2: LatLng): Float{
+        val distance = floatArrayOf(0f,0f)
+        Location.distanceBetween(l1.latitude,l1.longitude,l2.latitude,l2.longitude,distance)
+        return distance[0]
+    }
+
 }

@@ -9,6 +9,7 @@ import com.konradpekala.randomdestination.data.model.User
 
 import com.konradpekala.randomdestination.data.repos.MainRepository
 import com.konradpekala.randomdestination.ui.base.BasePresenter
+import com.konradpekala.randomdestination.utils.LatLngUtils
 
 
 class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
@@ -26,6 +27,9 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
                 mUser = user
                 if (!mUser!!.hasDestination){
                     view.showNewDestinationButton()
+                }else{
+                    val pos = mUser!!.destination
+                    view.showNewDestination(LatLng(pos.lat,pos.lng))
                 }
             },{t: Throwable? ->
                 Log.d("getUser",t.toString())
@@ -41,9 +45,8 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
         val newDestination = repo.generateDestination(mUser!!.level,mLastLocation!!)
 
         cd.add(repo.updateUserDestination(mUser!!,newDestination)
-            .subscribe({
-                mUser!!.destination = Position(newDestination.latitude,newDestination.longitude)
-                mUser!!.hasDestination = true
+            .subscribe({t:User ->
+                mUser = t
                 view.hideSearchingSurface()
                 view.showNewDestination(newDestination)
             },{t: Throwable? ->
@@ -53,25 +56,42 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
     }
 
     override fun onMapCreated() {
+        var userIsUpdatedOnReach = false
         cd.add(view.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-            .subscribe{
-                view.checkLocationSettings()
-                    .subscribe {
-                        cd.add(repo.observeLocation().subscribe { location: Location ->
-                            mLastLocation = location
+            .flatMap { t: String -> view.checkLocationSettings() }
+            .subscribe({
+                cd.add(repo.observeLocation().subscribe { location: Location ->
+                    mLastLocation = location
 
-                            if (isNeedForGoingToUserLocation)
-                                view.goToUserLocation(location)
+                    if (isNeedForGoingToUserLocation)
+                        view.goToUserLocation(location)
 
-                            view.showOrMoveUserLocation(location)
+                    view.showOrMoveUserLocation(location)
 
-                            if (mUser != null && !mUser!!.hasDestination)
-                                view.showOrMoveSearchingSurface(repo.getSearchingRadius(mUser!!.level),location)
-                        })
+                    if (mUser != null && !mUser!!.hasDestination)
+                        view.showOrMoveSearchingSurface(repo.getSearchingRadius(mUser!!.level),location)
+
+                    if (mUser != null && mUser!!.hasDestination){
+
+                        val distance = repo.getDistance(mLastLocation!!,mUser!!.destination)
+                        view.updateDistanceText(distance)
+
+                        if(repo.hasReachedDestination(distance) && !userIsUpdatedOnReach){
+                            userIsUpdatedOnReach = true
+                            cd.add(repo.updateUserOnReachDestination(mUser!!)
+                                .subscribe({t:User ->
+                                    userIsUpdatedOnReach = false
+                                    mUser = t
+                                },{t: Throwable? ->
+                                    userIsUpdatedOnReach = false
+                                }))
+                        }
                     }
-            })
-    }
+                })
+            }, { t: Throwable? ->
 
+            }))
+    }
     override fun onGoToUserLocationClick() {
         if (mLastLocation != null){
             view.goToUserLocation(mLastLocation!!)
