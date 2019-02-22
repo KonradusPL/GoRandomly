@@ -7,19 +7,23 @@ import com.konradpekala.randomdestination.ui.base.MvpView
 
 interface MainMvp {
     interface View: MvpView{
-        fun goToUserLocation(location: Location)
-        fun showOrMoveUserLocation(location: Location)
-        fun showOrMoveSearchingSurface(radius: Int,location: Location)
-        fun showNewDestination(location: LatLng)
-        fun hideSearchingSurface()
         fun showNewDestinationButton()
         fun hideNewDestinationButton()
         fun updateDistanceText(distance: Float)
         fun getPresenter(): Presenter<View>
+        fun getMap(): MapInterface
     }
     interface Presenter<V: View>: MvpPresenter<V>{
         fun onGoToUserLocationClick()
         fun onMapCreated()
         fun onNewDestinationButtonClick()
+    }
+    interface MapInterface{
+        fun goToUserLocation(location: Location)
+        fun showOrMoveUserLocation(location: Location)
+        fun showOrMoveSearchingSurface(radius: Int,l: Location)
+        fun showNewDestination(location: LatLng)
+        fun hideDestination()
+        fun hideSearchingSurface()
     }
 }

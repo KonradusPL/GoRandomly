@@ -29,7 +29,7 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
                     view.showNewDestinationButton()
                 }else{
                     val pos = mUser!!.destination
-                    view.showNewDestination(LatLng(pos.lat,pos.lng))
+                    view.getMap().showNewDestination(LatLng(pos.lat,pos.lng))
                 }
             },{t: Throwable? ->
                 Log.d("getUser",t.toString())
@@ -47,8 +47,8 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
         cd.add(repo.updateUserDestination(mUser!!,newDestination)
             .subscribe({t:User ->
                 mUser = t
-                view.hideSearchingSurface()
-                view.showNewDestination(newDestination)
+                view.getMap().hideSearchingSurface()
+                view.getMap().showNewDestination(newDestination)
             },{t: Throwable? ->
                 view.showNewDestinationButton()
             }))
@@ -64,12 +64,12 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
                     mLastLocation = location
 
                     if (isNeedForGoingToUserLocation)
-                        view.goToUserLocation(location)
+                        view.getMap().goToUserLocation(location)
 
-                    view.showOrMoveUserLocation(location)
+                    view.getMap().showOrMoveUserLocation(location)
 
                     if (mUser != null && !mUser!!.hasDestination)
-                        view.showOrMoveSearchingSurface(repo.getSearchingRadius(mUser!!.level),location)
+                        view.getMap().showOrMoveSearchingSurface(repo.getSearchingRadius(mUser!!.level),location)
 
                     if (mUser != null && mUser!!.hasDestination){
 
@@ -82,6 +82,10 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
                                 .subscribe({t:User ->
                                     userIsUpdatedOnReach = false
                                     mUser = t
+                                    view.getMap().hideDestination()
+                                    view.showNewDestinationButton()
+                                    view.getMap().showOrMoveSearchingSurface(
+                                        repo.getSearchingRadius(mUser!!.level),mLastLocation!!)
                                 },{t: Throwable? ->
                                     userIsUpdatedOnReach = false
                                 }))
@@ -94,7 +98,7 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
     }
     override fun onGoToUserLocationClick() {
         if (mLastLocation != null){
-            view.goToUserLocation(mLastLocation!!)
+            view.getMap().goToUserLocation(mLastLocation!!)
         }
         else{
             isNeedForGoingToUserLocation = true

@@ -60,27 +60,10 @@ class MainActivity : BaseActivity(),MainMvp.View {
         mFragmentMap.getMapAsync(mMapHelper)
     }
 
-    override fun goToUserLocation(location: Location) {
-        mMapHelper.goToUserLocation(location)
-    }
-
-    override fun showOrMoveUserLocation(location: Location) {
-        mMapHelper.showOrMoveUserMarker(location)
-    }
-
-    override fun showOrMoveSearchingSurface(radius: Int, location: Location) {
-        mMapHelper.showOrMoveSaerchingCircle(radius,location)
-    }
-
-    override fun showNewDestination(location: LatLng) {
-        mMapHelper.showNewDestination(location)
-    }
 
     override fun getPresenter() = mPresenter
 
-    override fun hideSearchingSurface() {
-        mMapHelper.hideSearchingCircle()
-    }
+    override fun getMap() = mMapHelper
 
     override fun showNewDestinationButton() {
         buttonNewDestination.visibility = View.VISIBLE

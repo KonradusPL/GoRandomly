@@ -4,20 +4,23 @@ package com.konradpekala.randomdestination.utils
 import android.graphics.Color
 import android.location.Location
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
+import com.konradpekala.randomdestination.R
 import com.konradpekala.randomdestination.main.MainMvp
 
 
-class MapHelper(val mView: MainMvp.View, fragment: Fragment?) : OnMapReadyCallback {
+class MapHelper(val mView: MainMvp.View, fragment: Fragment?) : OnMapReadyCallback,MainMvp.MapInterface {
 
     private var mMap: GoogleMap? = null
 
     private var mMarkerUser: Marker? = null
     private var mSearchingCircle: Circle? = null
+    private var mDestinationMarker:Marker? = null
 
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -49,7 +52,7 @@ class MapHelper(val mView: MainMvp.View, fragment: Fragment?) : OnMapReadyCallba
 */
     }
 
-    fun goToUserLocation(location: Location){
+    override fun goToUserLocation(location: Location){
         if (mMap == null)return
 
         val builder = CameraPosition.Builder()
@@ -63,33 +66,45 @@ class MapHelper(val mView: MainMvp.View, fragment: Fragment?) : OnMapReadyCallba
         mMap?.animateCamera(CameraUpdateFactory.newCameraPosition(builder.build()),1000,null)
     }
 
-    fun showOrMoveSaerchingCircle(radius: Int, l: Location){
+    override fun showOrMoveSearchingSurface(radius: Int,l: Location){
         if (mMap == null)return
+
+        val cPrimaryDark = ContextCompat.getColor(mView.getCtx(), R.color.colorPrimaryDark)
 
         if (mSearchingCircle == null || (mSearchingCircle!= null && mSearchingCircle!!.radius != radius.toDouble())){
             mSearchingCircle = mMap!!.addCircle(CircleOptions().center(LatLng(l.latitude,l.longitude))
                 .radius(radius.toDouble())
-                .fillColor(Color.CYAN).strokeColor(Color.RED))
+                .fillColor(0x55008577)
+                .strokeColor(cPrimaryDark)
+                .strokeWidth(3f))
         }else{
             MapUtils.animateCircleToGB(mSearchingCircle!!, LatLng(l.latitude,l.longitude), LatLngUtils)
         }
     }
 
-    fun hideSearchingCircle(){
+    override fun hideSearchingSurface() {
         mSearchingCircle?.isVisible = false
     }
 
 
-
-    fun showNewDestination(location: LatLng){
+    override fun showNewDestination(location: LatLng){
         if (mMap == null)return
 
-        mMap?.addMarker(MarkerOptions()
-            .position(LatLng(location.latitude, location.longitude)))
+        if (mDestinationMarker == null){
+            mDestinationMarker = mMap!!.addMarker(MarkerOptions()
+                .position(LatLng(location.latitude, location.longitude)))
+        }else{
+            mDestinationMarker?.isVisible = true
+            mDestinationMarker?.position = location
+        }
 
     }
 
-    fun showOrMoveUserMarker(location: Location){
+    override fun hideDestination() {
+        mDestinationMarker?.isVisible = false
+    }
+
+    override fun showOrMoveUserLocation(location: Location){
         if (mMap == null)return
 
         if (mMarkerUser == null){
