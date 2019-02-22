@@ -10,7 +10,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import com.konradpekala.randomdestination.main.MainMvp
-import com.konradpekala.randomdestination.ui.base.MvpView
 
 
 class MapHelper(val mView: MainMvp.View, fragment: Fragment?) : OnMapReadyCallback {
@@ -67,13 +66,27 @@ class MapHelper(val mView: MainMvp.View, fragment: Fragment?) : OnMapReadyCallba
     fun showOrMoveSaerchingCircle(radius: Int, l: Location){
         if (mMap == null)return
 
-        if (mSearchingCircle == null){
+        if (mSearchingCircle == null || (mSearchingCircle!= null && mSearchingCircle!!.radius != radius.toDouble())){
             mSearchingCircle = mMap!!.addCircle(CircleOptions().center(LatLng(l.latitude,l.longitude))
                 .radius(radius.toDouble())
                 .fillColor(Color.CYAN).strokeColor(Color.RED))
         }else{
-            MapUtils.animateCircleToGB(mSearchingCircle!!, LatLng(l.latitude,l.longitude), LatLngInterpolator())
+            MapUtils.animateCircleToGB(mSearchingCircle!!, LatLng(l.latitude,l.longitude), LatLngUtils)
         }
+    }
+
+    fun hideSearchingCircle(){
+        mSearchingCircle?.isVisible = false
+    }
+
+
+
+    fun showNewDestination(location: LatLng){
+        if (mMap == null)return
+
+        mMap?.addMarker(MarkerOptions()
+            .position(LatLng(location.latitude, location.longitude)))
+
     }
 
     fun showOrMoveUserMarker(location: Location){
@@ -84,7 +97,7 @@ class MapHelper(val mView: MainMvp.View, fragment: Fragment?) : OnMapReadyCallba
                 .position(LatLng(location.latitude, location.longitude)))
         }else{
             MapUtils.animateMarkerToGB(mMarkerUser!!, LatLng(location.latitude,location.longitude),
-                LatLngInterpolator()
+                LatLngUtils
             )
         }
 

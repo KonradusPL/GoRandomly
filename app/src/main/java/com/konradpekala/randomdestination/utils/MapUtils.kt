@@ -10,7 +10,7 @@ import com.google.android.gms.maps.model.Marker
 
 
 object MapUtils {
-    fun animateMarkerToGB(marker: Marker, finalPosition: LatLng, latLngInterpolator: LatLngInterpolator) {
+    fun animateMarkerToGB(marker: Marker, finalPosition: LatLng, latLngUtils: LatLngUtils) {
         val startPosition = marker.position
         val handler = Handler()
         val start = SystemClock.uptimeMillis()
@@ -27,7 +27,7 @@ object MapUtils {
                 t = elapsed / durationInMs
                 v = interpolator.getInterpolation(t)
 
-                marker.position = latLngInterpolator.interpolate(v, startPosition, finalPosition)
+                marker.position = latLngUtils.interpolate(v, startPosition, finalPosition)
 
                 if (t < 1) {
                     // Post again 16ms later.
@@ -37,7 +37,7 @@ object MapUtils {
         })
     }
 
-    fun animateCircleToGB(circle: Circle, finalPosition: LatLng, latLngInterpolator: LatLngInterpolator) {
+    fun animateCircleToGB(circle: Circle, finalPosition: LatLng, latLngUtils: LatLngUtils) {
         val startPosition = circle.center
         val handler = Handler()
         val start = SystemClock.uptimeMillis()
@@ -54,7 +54,7 @@ object MapUtils {
                 t = elapsed / durationInMs
                 v = interpolator.getInterpolation(t)
 
-                circle.center = latLngInterpolator.interpolate(v, startPosition, finalPosition)
+                circle.center = latLngUtils.interpolate(v, startPosition, finalPosition)
 
                 if (t < 1) {
                     // Post again 16ms later.

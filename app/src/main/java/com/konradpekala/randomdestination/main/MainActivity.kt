@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
 import com.konradpekala.randomdestination.R
 import com.konradpekala.randomdestination.data.FirebaseDatabase
 import com.konradpekala.randomdestination.data.LocationProvider
@@ -42,6 +43,9 @@ class MainActivity : BaseActivity(),MainMvp.View {
         buttonGoToUserLocation.setOnClickListener {
             mPresenter.onGoToUserLocationClick()
         }
+        buttonNewDestination.setOnClickListener {
+            mPresenter.onNewDestinationButtonClick()
+        }
     }
 
     private fun initMapStuff(){
@@ -68,10 +72,14 @@ class MainActivity : BaseActivity(),MainMvp.View {
         mMapHelper.showOrMoveSaerchingCircle(radius,location)
     }
 
+    override fun showNewDestination(location: LatLng) {
+        mMapHelper.showNewDestination(location)
+    }
+
     override fun getPresenter() = mPresenter
 
     override fun hideSearchingSurface() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        mMapHelper.hideSearchingCircle()
     }
 
     override fun showNewDestinationButton() {
