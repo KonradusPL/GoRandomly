@@ -9,30 +9,31 @@ import android.graphics.Bitmap
 
 
 object BitmapUtils {
-    var mBitmapMarkerUserBase: Bitmap? = null
-    var mBitmapMarkerDestBase: Bitmap? = null
+    var mBitmapMarkerUser: Bitmap? = null
+    var mBitmapMarkerDest: Bitmap? = null
 
 
     fun getUserMarkerBitmap(context: Context, size: Int): Bitmap{
-        if(mBitmapMarkerUserBase == null)
-            mBitmapMarkerUserBase = createBaseBitmap(context,R.drawable.user_holder)
+        if(mBitmapMarkerUser == null){
+            val base = createBaseBitmap(context,R.drawable.user_holder)
+            val circleBitmap = toCircle(base)
+            mBitmapMarkerUser = getResizedBitmap(circleBitmap,size,size)
+            return mBitmapMarkerUser!!
 
-        val circleBitmap = toCircle(mBitmapMarkerUserBase!!)
-
-        val resizedCircleBitmap = getResizedBitmap(circleBitmap,size,size)
-
-        return resizedCircleBitmap
+        }
+        else
+            return mBitmapMarkerUser!!
     }
 
     fun getDestinationMarkerBitmap(context: Context, size: Int): Bitmap{
-        if(mBitmapMarkerDestBase == null)
-            mBitmapMarkerDestBase = createBaseBitmap(context,R.drawable.flag)
-
-        val circleBitmap = toCircle(mBitmapMarkerDestBase!!)
-
-        val resizedCircleBitmap = getResizedBitmap(circleBitmap,size,size)
-
-        return resizedCircleBitmap
+        if(mBitmapMarkerDest == null){
+            val base = createBaseBitmap(context,R.drawable.flag)
+            val circleBitmap = toCircle(base)
+            mBitmapMarkerDest = getResizedBitmap(circleBitmap,size,size)
+            return mBitmapMarkerDest!!
+        }
+        else
+            return mBitmapMarkerDest!!
     }
 
     private fun createBaseBitmap(context: Context, resource: Int): Bitmap{
@@ -51,7 +52,7 @@ object BitmapUtils {
 
         val resizedBitmap = Bitmap.createBitmap(
             bm, 0, 0, width, height, matrix, false)
-        bm.recycle()
+        //bm.recycle()
         return resizedBitmap
     }
 
@@ -63,7 +64,7 @@ object BitmapUtils {
 
         val squaredBitmap = Bitmap.createBitmap(source, x, y, size, size)
         if (squaredBitmap != source) {
-            source.recycle()
+            //source.recycle()
         }
 
         val bitmap = Bitmap.createBitmap(size, size, source.config)
@@ -77,7 +78,7 @@ object BitmapUtils {
         val r = size / 2f
         canvas.drawCircle(r, r, r, paint)
 
-        squaredBitmap.recycle()
+        //squaredBitmap.recycle()
         return bitmap
     }
 }

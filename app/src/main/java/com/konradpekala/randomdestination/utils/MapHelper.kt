@@ -29,6 +29,10 @@ class MapHelper(val mView: MainMvp.View, fragment: Fragment?) : OnMapReadyCallba
 
         mView.getPresenter().onMapCreated()
 
+        mMap?.setOnMarkerClickListener {
+            return@setOnMarkerClickListener true
+        }
+
         /*mMap?.apply {
             setPadding(0,60,0,0)
             isBuildingsEnabled = false

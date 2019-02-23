@@ -107,6 +107,13 @@ class MainActivity : BaseActivity(),MainMvp.View {
         mFragmentMap.getMapAsync(mMapHelper)
     }
 
+    override fun onBackPressed() {
+        if(layoutProfile.visibility == View.VISIBLE)
+            animate(false)
+        else
+            super.onBackPressed()
+    }
+
     override fun getPresenter() = mPresenter
 
     override fun getMap() = mMapHelper
@@ -127,6 +134,7 @@ class MainActivity : BaseActivity(),MainMvp.View {
 
     override fun openLoginActivity() {
         startActivity(Intent(this,LoginActivity::class.java))
+        finish()
     }
 
     override fun hideNewDestinationButton() {

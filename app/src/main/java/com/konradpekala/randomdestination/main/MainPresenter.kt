@@ -101,6 +101,7 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
 
     override fun onLogOutClick() {
         repo.logOut()
+        view.openLoginActivity()
     }
 
     override fun onChangeNameClick(newName: String) {
