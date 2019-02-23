@@ -2,11 +2,14 @@ package com.konradpekala.randomdestination.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
+import androidx.transition.Slide
+import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.google.android.gms.maps.SupportMapFragment
 import com.konradpekala.randomdestination.R
@@ -42,16 +45,11 @@ class MainActivity : BaseActivity(),MainMvp.View {
     fun animate(first: Boolean){
         val constraintSet1 = ConstraintSet()
         constraintSet1.clone(this, R.layout.activity_main)
-        val constraintSet2 = ConstraintSet()
-        constraintSet2.clone(this, R.layout.activity_main_profile)
 
-        var changed = false
+        val transition = Slide(Gravity.BOTTOM)
 
-        TransitionManager.beginDelayedTransition(constraintLayout)
-        val constraint = if (first) constraintSet1 else constraintSet2
-        constraint.applyTo(constraintLayout)
-        changed = !changed
-
+        TransitionManager.beginDelayedTransition(constraintLayout,transition)
+        layoutProfile.visibility = if(first) View.VISIBLE else View.GONE
     }
 
     override fun onDestroy() {
@@ -67,10 +65,10 @@ class MainActivity : BaseActivity(),MainMvp.View {
             mPresenter.onNewDestinationButtonClick()
         }
         imageGoToProfile.setOnClickListener {
-            animate(false)
+            animate(true)
         }
         iconExitFromProfile.setOnClickListener {
-            animate(true)
+            animate(false)
         }
         buttonLogOut.setOnClickListener {
             mPresenter.onLogOutClick()

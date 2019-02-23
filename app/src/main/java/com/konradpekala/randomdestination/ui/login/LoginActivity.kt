@@ -45,5 +45,6 @@ class LoginActivity : BaseActivity(),LoginMvp.View {
 
     override fun openMainActivity() {
         startActivity(Intent(this,MainActivity::class.java))
+        finish()
     }
 }

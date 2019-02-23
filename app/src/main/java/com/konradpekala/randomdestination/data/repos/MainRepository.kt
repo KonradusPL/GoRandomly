@@ -87,7 +87,7 @@ class MainRepository(private val mLocationProvider: LocationProvider,
             LatLng(dest.lat,dest.lng))
     }
 
-    fun hasReachedDestination(distance: Float) = distance < 40
+    fun hasReachedDestination(distance: Float) = distance < 20
 
     fun getSearchingRadius(level: Int): Int{
         return (level)*(level)*10

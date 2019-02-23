@@ -79,5 +79,9 @@ dependencies {
 
     implementation "com.mikepenz:materialdrawer:6.1.2"
 
+    //animations
+    implementation "com.andkulikov:transitionseverywhere:1.8.1"
+
+
 }
 apply plugin: 'com.google.gms.google-services'

@@ -92,7 +92,9 @@ class MapHelper(val mView: MainMvp.View, fragment: Fragment?) : OnMapReadyCallba
 
         if (mDestinationMarker == null){
             mDestinationMarker = mMap!!.addMarker(MarkerOptions()
-                .position(LatLng(location.latitude, location.longitude)))
+                .position(LatLng(location.latitude, location.longitude))
+                .icon(BitmapDescriptorFactory.fromBitmap(
+                BitmapUtils.getDestinationMarkerBitmap(mView.getCtx(),80))))
         }else{
             mDestinationMarker?.isVisible = true
             mDestinationMarker?.position = location
@@ -109,7 +111,9 @@ class MapHelper(val mView: MainMvp.View, fragment: Fragment?) : OnMapReadyCallba
 
         if (mMarkerUser == null){
             mMarkerUser = mMap!!.addMarker(MarkerOptions()
-                .position(LatLng(location.latitude, location.longitude)))
+                .position(LatLng(location.latitude, location.longitude))
+                .icon(BitmapDescriptorFactory.fromBitmap(
+                    BitmapUtils.getUserMarkerBitmap(mView.getCtx(),80))))
         }else{
             MapUtils.animateMarkerToGB(mMarkerUser!!, LatLng(location.latitude,location.longitude),
                 LatLngUtils
