@@ -23,7 +23,7 @@
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusTopStart="8dp"
-            android:hint="Email"
+            android:hint="@string/hint_email"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
     >
 
@@ -41,9 +41,13 @@
             android:layout_marginStart="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:passwordToggleEnabled="true"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusTopStart="8dp"
             app:boxBackgroundColor="@color/white"
             android:layout_marginEnd="32dp"
-            android:hint="Password"
+            android:hint="@string/hint_password"
             app:layout_constraintTop_toBottomOf="@+id/textLayoutEmail"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
             android:id="@+id/textLayoutPassword" android:layout_marginTop="16dp">
@@ -51,12 +55,11 @@
         <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:inputType="textPassword"
         android:id="@+id/fieldPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
     <Button
-            android:text="Zaloguj się"
+            android:text="@string/button_sign_in"
             android:layout_width="wrap_content"
             app:boxBackgroundColor="@color/white"
             android:backgroundTint="@color/colorPrimary"
@@ -66,7 +69,7 @@
             app:layout_constraintHorizontal_bias="0.5" app:layout_constraintEnd_toStartOf="@+id/buttonSignUp"
             android:layout_marginTop="16dp" app:layout_constraintTop_toBottomOf="@+id/textLayoutPassword"/>
     <Button
-            android:text="Nowe konto"
+            android:text="@string/button_sign_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"

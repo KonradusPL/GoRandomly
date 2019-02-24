@@ -4,6 +4,7 @@ import android.Manifest
 import android.location.Location
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
+import com.konradpekala.randomdestination.R
 import com.konradpekala.randomdestination.data.model.Position
 import com.konradpekala.randomdestination.data.model.User
 
@@ -26,6 +27,7 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
             .subscribe({user: User ->
                 mUser = user
                 view.updateNameText(user.fullName)
+                view.updateLevelText(user.level)
                 if (!mUser!!.hasDestination){
                     view.showNewDestinationButton()
                 }else{
@@ -39,7 +41,7 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
 
     override fun onNewDestinationButtonClick() {
         if (mLastLocation == null){
-            view.showMessage("Upewnij się że masz włącząną lokalizacje")
+            view.showMessage(R.string.location_check)
             return
         }
         view.hideNewDestinationButton()
@@ -64,8 +66,10 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
                 cd.add(repo.observeLocation().subscribe { location: Location ->
                     mLastLocation = location
 
-                    if (isNeedForGoingToUserLocation)
+                    if (isNeedForGoingToUserLocation){
+                        isNeedForGoingToUserLocation = false
                         view.getMap().goToUserLocation(location)
+                    }
 
                     view.getMap().showOrMoveUserLocation(location)
 
@@ -84,7 +88,9 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
                                     userIsUpdatedOnReach = false
                                     mUser = t
                                     view.hideDistanceText()
+                                    view.updateLevelText(t.level)
                                     view.getMap().hideDestination()
+                                    view.showReachedDestinationDialog()
                                     view.showNewDestinationButton()
                                     view.getMap().showOrMoveSearchingSurface(
                                         repo.getSearchingRadius(mUser!!.level),mLastLocation!!)
@@ -110,7 +116,7 @@ class MainPresenter<V: MainMvp.View>(view: V, val repo: MainRepository)
         cd.add(repo.changeName(newName,mUser!!).subscribe({
             view.updateNameText(newName)
         },{t: Throwable? ->
-            view.showMessage("Bład przy zmienianiu nazwy")
+            view.showMessage(R.string.change_name_error)
         }))
     }
     override fun onGoToUserLocationClick() {

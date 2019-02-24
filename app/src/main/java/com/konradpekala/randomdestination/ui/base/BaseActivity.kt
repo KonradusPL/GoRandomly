@@ -1,11 +1,14 @@
 package com.konradpekala.randomdestination.ui.base
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -95,6 +98,18 @@ open class BaseActivity : AppCompatActivity(), MvpView {
 
     }
 
+    override fun openLink(link: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.setPackage("com.android.chrome")
+        try {
+            startActivity(intent)
+        } catch (ex: ActivityNotFoundException) {
+            intent.setPackage(null)
+            startActivity(intent)
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CHECK_SETTINGS){
@@ -112,7 +127,7 @@ open class BaseActivity : AppCompatActivity(), MvpView {
     }
 
     override fun showMessage(message: Int) {
-        ///Toasty.info(this,TextUtils.t).show()
+        Toasty.info(this,resources.getString(message)).show()
     }
 
     override fun isConnectedToNetwork(): Boolean {

@@ -23,4 +23,5 @@ interface MvpView {
     fun requestPermissionsSafely(permissions: Array<String>, requestCode: Int)
 
     fun checkLocationSettings(): Single<String>
+    fun openLink(link: String)
 }

@@ -16,6 +16,8 @@ interface MainMvp {
         fun getMap(): MapInterface
         fun updateNameText(name: String)
         fun openLoginActivity()
+        fun updateLevelText(level: Int)
+        fun showReachedDestinationDialog()
     }
     interface Presenter<V: View>: MvpPresenter<V>{
         fun onGoToUserLocationClick()

@@ -9,7 +9,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.transition.Slide
-import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.google.android.gms.maps.SupportMapFragment
 import com.konradpekala.randomdestination.R
@@ -22,6 +21,7 @@ import com.konradpekala.randomdestination.ui.login.LoginActivity
 import com.konradpekala.randomdestination.utils.MapHelper
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_change_name.view.*
+import org.jetbrains.anko.AlertDialogBuilder
 
 
 class MainActivity : BaseActivity(),MainMvp.View {
@@ -74,16 +74,18 @@ class MainActivity : BaseActivity(),MainMvp.View {
             mPresenter.onLogOutClick()
         }
         buttonChangeName.setOnClickListener {
-            createChangeNameDialog()
+            showChangeNameDialog()
         }
-
+        buttonPrivacyPolicy.setOnClickListener {
+            openLink("https://konraduspl.github.io/")
+        }
     }
 
-    private fun createChangeNameDialog(){
+    private fun showChangeNameDialog(){
         val customView = LayoutInflater.from(this).inflate(R.layout.dialog_change_name,constraintLayout,false)
 
         val dialog = AlertDialog.Builder(this)
-            .setTitle("Zmiana nazwy")
+            .setTitle(resources.getString(R.string.changing_name))
             .setView(customView).create()
 
         customView.buttonDialogCreate.setOnClickListener {
@@ -94,6 +96,18 @@ class MainActivity : BaseActivity(),MainMvp.View {
         dialog.show()
 
     }
+
+    override fun showReachedDestinationDialog() {
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Hurra!")
+            .setMessage(R.string.reached_dest)
+            .setPositiveButton("OK"){ dialogInterface, i ->
+                dialogInterface.dismiss()
+            }.create()
+        dialog.show()
+    }
+
+
 
     private fun initMapStuff(){
         mFragmentMap = SupportMapFragment.newInstance()
@@ -114,6 +128,10 @@ class MainActivity : BaseActivity(),MainMvp.View {
             super.onBackPressed()
     }
 
+    override fun updateLevelText(level: Int){
+        textLevel.text = "${resources.getString(R.string.level)} $level"
+    }
+
     override fun getPresenter() = mPresenter
 
     override fun getMap() = mMapHelper
@@ -129,7 +147,10 @@ class MainActivity : BaseActivity(),MainMvp.View {
     override fun updateDistanceText(distance: Float) {
         if (textDistance.visibility == View.GONE)
             textDistance.visibility = View.VISIBLE
-        textDistance.text = "Dystans: ${distance.toInt()}m"
+        val p = if (distance < 1000) "m" else "km"
+        val distanceScaled: Float = if(distance < 1000) distance else distance/1000
+        val rounded = Math.round(distanceScaled * 100f)/100f
+        textDistance.text = "$rounded$p"
     }
 
     override fun openLoginActivity() {

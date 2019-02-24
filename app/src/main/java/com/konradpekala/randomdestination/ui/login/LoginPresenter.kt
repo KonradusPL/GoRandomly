@@ -1,6 +1,7 @@
 package com.konradpekala.randomdestination.ui.login
 
 import android.util.Log
+import com.konradpekala.randomdestination.R
 import com.konradpekala.randomdestination.data.repos.LoginRepository
 import com.konradpekala.randomdestination.ui.base.BasePresenter
 
@@ -8,7 +9,7 @@ class LoginPresenter<V: LoginMvp.View>(view: V,val repo: LoginRepository): BaseP
 
     override fun onSignUpButtonClick(email: String, password: String) {
         if (password.length < 6){
-            view.showMessage("Hasło powinno zawierać conajmniej 6 cyfr!")
+            view.showMessage(R.string.password_6_chars)
         }
 
         view.showLoading()
@@ -16,12 +17,12 @@ class LoginPresenter<V: LoginMvp.View>(view: V,val repo: LoginRepository): BaseP
             .flatMap { t: String -> repo.createUser(email,password,t) }
             .subscribe({
                 view.hideLoading()
-                view.showMessage("Udało się stworzyć konto")
+                view.showMessage(R.string.success)
                 view.openMainActivity()
             },{t: Throwable? ->
                 Log.d("onSignUpButtonClick",t.toString())
                 view.hideLoading()
-                view.showMessage("Błąd! Upewnij się że twoje hasło posiada cyfry")
+                view.showMessage(R.string.create_account_error)
                 view.showMessage(t.toString())
             }))
     }
@@ -32,11 +33,11 @@ class LoginPresenter<V: LoginMvp.View>(view: V,val repo: LoginRepository): BaseP
             .doOnComplete { view.hideLoading() }
             .subscribe({
                 view.hideLoading()
-                view.showMessage("Udało się zalogować")
+                view.showMessage(R.string.success)
                 view.openMainActivity()
             },{t: Throwable? ->
                 view.hideLoading()
-                view.showMessage("error")
+                view.showMessage(R.string.sign_in_error)
             }))
     }
 

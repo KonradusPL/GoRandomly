@@ -1,3 +1,28 @@
 <resources>
-    <string name="app_name">RandomDestination</string>
+    <string name="app_name">GoRandomly</string>
+    <string name="password_6_chars">Password should have at least 6 characters!</string>
+    <string name="success">Success!</string>
+    <string name="create_account_error">Error! Cannot create an account!</string>
+    <string name="sign_in_error">Error! Cannot sign in to your account!</string>
+    <string name="change_name_error">Error when changing the name</string>
+    <string name="location_check">Check if you have location turned on</string>
+
+
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+
+    <string name="button_sign_in">Sign in</string>
+    <string name="button_sign_up">Create account</string>
+    <string name="button_sign_out">Sign out</string>
+    <string name="button_change_name">Change name</string>
+    <string name="button_privacy_policy">Privacy policy</string>
+
+    <string name="name">Name</string>
+    <string name="level">Level:</string>
+    <string name="distance">Distance:</string>
+    <string name="change_name">Change name</string>
+    <string name="new_name">New name</string>
+    <string name="changing_name">Changing name</string>
+
+    <string name="reached_dest">You have just reached your destination!</string>
 </resources>
